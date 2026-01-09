@@ -1,0 +1,102 @@
+[
+  {
+    "ProductName": "Large Cappuccino",
+    "CategoryId": 1,
+    "Price": "4.50"
+  },
+  {
+    "ProductName": "Iced Americano",
+    "CategoryId": 1,
+    "Price": "3.75"
+  },
+  {
+    "ProductName": "Mint Tea",
+    "CategoryId": 1,
+    "Price": "3.00"
+  },
+  {
+    "ProductName": "Fresh Orange Juice",
+    "CategoryId": 1,
+    "Price": "5.00"
+  },
+  {
+    "ProductName": "Chocolate Croissant",
+    "CategoryId": 2,
+    "Price": "3.80"
+  },
+  {
+    "ProductName": "Blueberry Muffin",
+    "CategoryId": 2,
+    "Price": "3.25"
+  },
+  {
+    "ProductName": "Cheese Danish",
+    "CategoryId": 2,
+    "Price": "4.00"
+  },
+  {
+    "ProductName": "Greek Salad",
+    "CategoryId": 3,
+    "Price": "10.50"
+  },
+  {
+    "ProductName": "Caesar Salad",
+    "CategoryId": 3,
+    "Price": "11.00"
+  },
+  {
+    "ProductName": "Quinoa Salad",
+    "CategoryId": 3,
+    "Price": "12.00"
+  },
+  {
+    "ProductName": "Tuna Sandwich",
+    "CategoryId": 4,
+    "Price": "8.50"
+  },
+  {
+    "ProductName": "Avocado Sandwich",
+    "CategoryId": 4,
+    "Price": "9.00"
+  },
+  {
+    "ProductName": "Smoked Salmon Bagel",
+    "CategoryId": 4,
+    "Price": "10.00"
+  },
+  {
+    "ProductName": "Classic Cheese Toast",
+    "CategoryId": 5,
+    "Price": "6.50"
+  },
+  {
+    "ProductName": "Mushroom & Pesto Toast",
+    "CategoryId": 5,
+    "Price": "7.25"
+  },
+  {
+    "ProductName": "Pizza Toast",
+    "CategoryId": 5,
+    "Price": "7.00"
+  },
+  {
+    "ProductName": "Classic Israeli Breakfast",
+    "CategoryId": 6,
+    "Price": "15.00"
+  },
+  {
+    "ProductName": "Shakshuka",
+    "CategoryId": 6,
+    "Price": "14.50"
+  },
+  {
+    "ProductName": "Pancake Stack",
+    "CategoryId": 6,
+    "Price": "12.50"
+  },
+  {
+    "ProductName": "Eggs Benedict",
+    "CategoryId": 6,
+    "Price": "16.00"
+  }
+]

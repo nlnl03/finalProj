@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coffee shop</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="main-header" id="navbar"></header>
+    <div class="main-container">
+      <div class="hello-message">
+        <h1>Welcome to our Coffee Shop Dashboard</h1>
+        <p>Manage your products, orders, and customers all in one place.</p>
+      </div>
+    </div>
+  </body>
+
+  <script type="module">
+    import { loadNavbar } from "./navbar/navbar.js";
+    loadNavbar();
+  </script>
+</html>

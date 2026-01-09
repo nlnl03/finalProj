@@ -1,0 +1,53 @@
+body {
+  font-family: "Inter", sans-serif;
+  background-color: #f4f1ea;
+  margin: 0;
+  padding: 0;
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body,
+html {
+  width: 100%; /* Use 100% instead of 100vw to avoid scrollbar width issues */
+  overflow-x: hidden; /* Hides the horizontal scrollbar */
+  margin: 0; /* Removes default browser margins */
+}
+
+.main-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 50px;
+}
+
+.main-header {
+  background-color: #c0c0c0a1;
+  height: 110px;
+  z-index: 100;
+}
+a {
+  text-decoration: none;
+  color: black;
+}
+
+.main-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+  margin: 10%;
+}
+@media screen and (max-width: 768px) {
+}
+h1 {
+  font-size: clamp(1.5rem, 13vw, 3rem);
+  text-align: center;
+}
+
+/* @media screen and (max-width: 400px) {
+} */

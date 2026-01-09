@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My orders</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="main-header" id="navbar"></header>
+    <div class="main-page">
+      <div class="page-title"><h1>Your Orders</h1></div>
+      <div class="orders-container" id="orders"></div>
+    </div>
+  </body>
+</html>
+
+<script type="module">
+  import { loadNavbar } from "./navbar/navbar.js";
+  loadNavbar();
+
+  let orders = JSON.parse(localStorage.getItem("orders")) || [];
+  orders.sort(function (a, b) {
+    function toDateObj(dateStr) {
+      const parts = dateStr.split("/");
+      return new Date(parts[2], parts[1] - 1, parts[0]);
+    }
+
+    const dateA = toDateObj(a.Date);
+    const dateB = toDateObj(b.Date);
+
+    return dateB - dateA;
+  });
+
+  console.log(orders);
+  let ordersContainer = document.getElementById("orders");
+  orders.forEach((order) => {
+    let orderCard = document.createElement("div");
+    orderCard.className = "order-card";
+
+    let orderName = document.createElement("p");
+    orderName.textContent = order.ProductName;
+    orderCard.appendChild(orderName);
+
+    let totalAmount = document.createElement("p");
+    totalAmount.textContent = `Total Amount: $${parseFloat(
+      order.Amount
+    ).toFixed(2)}`;
+
+    let orderDate = document.createElement("p");
+    orderDate.textContent = `Date: ${order.Date}`;
+    orderCard.appendChild(orderDate);
+    orderCard.appendChild(totalAmount);
+    ordersContainer.appendChild(orderCard);
+  });
+</script>
+
+<style>
+  .orders-container {
+    display: flex;
+    flex-direction: column;
+    width: 700px;
+  }
+  .order-card {
+    /* display: flex; */
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+  }
+</style>
