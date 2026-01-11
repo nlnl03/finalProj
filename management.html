@@ -44,7 +44,7 @@
               Choose Products JSON
             </label>
             <input type="file" id="productInput" accept=".json" />
-            <span id="productFileName" class="file-name">No file chosen</span>
+            <span id="products" class="file-name">No file chosen</span>
           </div>
         </div>
 
@@ -72,7 +72,7 @@
               Choose Orders JSON
             </label>
             <input type="file" id="ordersInput" accept=".json" />
-            <span id="ordersFileName" class="file-name">No file chosen</span>
+            <span id="orders" class="file-name">No file chosen</span>
           </div>
         </div>
       </div>
@@ -86,14 +86,33 @@
         document
           .getElementById(inputId)
           .addEventListener("change", function (e) {
-            const fileName = e.target.files[0]
-              ? e.target.files[0].name
-              : "No file chosen";
-            document.getElementById(spanId).textContent = fileName;
+            const file = event.target.files[0];
+            console.log(file);
+
+            if (file) {
+              const reader = new FileReader();
+              reader.onload = function (e) {
+                try {
+                  const jsonContent = e.target.result;
+                  const data = JSON.parse(jsonContent);
+
+                  localStorage.setItem(spanId, JSON.stringify(data));
+                  const fileName = file ? file.name : "No file chosen";
+                  document.getElementById(spanId).textContent = fileName;
+
+                  alert("הקובץ נטען ונשמר בהצלחה!");
+                  console.log("Data saved:", data);
+                } catch (error) {
+                  console.error("שגיאה בפענוח הקובץ:", error);
+                  alert("הקובץ אינו בפורמט JSON תקין");
+                }
+              };
+              reader.readAsText(file);
+            }
           });
       }
-      updateFileName("productInput", "productFileName");
-      updateFileName("ordersInput", "ordersFileName");
+      updateFileName("productInput", "products");
+      updateFileName("ordersInput", "orders");
     </script>
   </body>
 </html>

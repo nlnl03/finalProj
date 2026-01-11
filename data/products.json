@@ -2,101 +2,121 @@
   {
     "ProductName": "Large Cappuccino",
     "CategoryId": 1,
-    "Price": "4.50"
+    "Price": "4.50",
+    "ImageUrl": "./assets/productsImages/image1.png"
   },
   {
     "ProductName": "Iced Americano",
     "CategoryId": 1,
-    "Price": "3.75"
+    "Price": "3.75",
+    "ImageUrl": "./assets/productsImages/image2.png"
   },
   {
     "ProductName": "Mint Tea",
     "CategoryId": 1,
-    "Price": "3.00"
+    "Price": "3.00",
+    "ImageUrl": "./assets/productsImages/image3.png"
   },
   {
     "ProductName": "Fresh Orange Juice",
     "CategoryId": 1,
-    "Price": "5.00"
+    "Price": "5.00",
+    "ImageUrl": "./assets/productsImages/image4.png"
   },
   {
     "ProductName": "Chocolate Croissant",
     "CategoryId": 2,
-    "Price": "3.80"
+    "Price": "3.80",
+    "ImageUrl": "./assets/productsImages/image5.png"
   },
   {
     "ProductName": "Blueberry Muffin",
     "CategoryId": 2,
-    "Price": "3.25"
+    "Price": "3.25",
+    "ImageUrl": "./assets/productsImages/image6.png"
   },
   {
     "ProductName": "Cheese Danish",
     "CategoryId": 2,
-    "Price": "4.00"
+    "Price": "4.00",
+    "ImageUrl": "./assets/productsImages/image7.png"
   },
   {
     "ProductName": "Greek Salad",
     "CategoryId": 3,
-    "Price": "10.50"
+    "Price": "10.50",
+    "ImageUrl": "./assets/productsImages/image8.png"
   },
   {
     "ProductName": "Caesar Salad",
     "CategoryId": 3,
-    "Price": "11.00"
+    "Price": "11.00",
+    "ImageUrl": "./assets/productsImages/image9.png"
   },
   {
     "ProductName": "Quinoa Salad",
     "CategoryId": 3,
-    "Price": "12.00"
+    "Price": "12.00",
+    "ImageUrl": "./assets/productsImages/image10.png"
   },
   {
     "ProductName": "Tuna Sandwich",
     "CategoryId": 4,
-    "Price": "8.50"
+    "Price": "8.50",
+    "ImageUrl": "./assets/productsImages/image11.png"
   },
   {
     "ProductName": "Avocado Sandwich",
     "CategoryId": 4,
-    "Price": "9.00"
+    "Price": "9.00",
+    "ImageUrl": "./assets/productsImages/image12.png"
   },
   {
     "ProductName": "Smoked Salmon Bagel",
     "CategoryId": 4,
-    "Price": "10.00"
+    "Price": "10.00",
+    "ImageUrl": "./assets/productsImages/image13.png"
   },
   {
     "ProductName": "Classic Cheese Toast",
     "CategoryId": 5,
-    "Price": "6.50"
+    "Price": "6.50",
+    "ImageUrl": "./assets/productsImages/image14.png"
   },
   {
     "ProductName": "Mushroom & Pesto Toast",
     "CategoryId": 5,
-    "Price": "7.25"
+    "Price": "7.25",
+    "ImageUrl": "./assets/productsImages/image15.png"
   },
   {
     "ProductName": "Pizza Toast",
     "CategoryId": 5,
-    "Price": "7.00"
+    "Price": "7.00",
+    "ImageUrl": "./assets/productsImages/image16.png"
   },
   {
     "ProductName": "Classic Israeli Breakfast",
     "CategoryId": 6,
-    "Price": "15.00"
+    "Price": "15.00",
+    "ImageUrl": "./assets/productsImages/image17.png"
   },
   {
     "ProductName": "Shakshuka",
     "CategoryId": 6,
-    "Price": "14.50"
+    "Price": "14.50",
+    "ImageUrl": "./assets/productsImages/image18.png"
   },
   {
     "ProductName": "Pancake Stack",
     "CategoryId": 6,
-    "Price": "12.50"
+    "Price": "12.50",
+    "ImageUrl": "./assets/productsImages/image19.png"
   },
   {
     "ProductName": "Eggs Benedict",
     "CategoryId": 6,
-    "Price": "16.00"
+    "Price": "16.00",
+    "ImageUrl": "./assets/productsImages/image20.png"
   }
 ]

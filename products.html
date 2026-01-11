@@ -3,48 +3,143 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Products</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <header class="main-header" id="navbar"></header>
-    <div class="flex-items" id="products"></div>
+    <div class="products-grid" id="products"></div>
+
+    <script type="module">
+      import { loadNavbar } from "./navbar/navbar.js";
+      loadNavbar();
+
+      let params = new URLSearchParams(window.location.search);
+      let categoryId = params.get("category");
+
+      const products = JSON.parse(localStorage.getItem("products")) || [];
+      console.log(products);
+      let filteredProducts = products.filter(
+        (product) => product.CategoryId.toString() === categoryId
+      );
+
+      let productsContainer = document.getElementById("products");
+
+      filteredProducts.forEach((product, index) => {
+        let productCard = document.createElement("div");
+        productCard.className = "product-card";
+
+        // 1. Create Image
+        let img = document.createElement("img");
+        // Note: Make sure this path logic matches your actual file structure
+        img.src = product.ImageUrl;
+        img.className = "product-img"; // Added class for styling
+        img.alt = product.ProductName; // Good for accessibility
+        productCard.appendChild(img);
+
+        // 2. Create Content Wrapper (for padding)
+        let infoDiv = document.createElement("div");
+        infoDiv.className = "card-info";
+
+        let name = document.createElement("h3");
+        name.textContent = product.ProductName;
+        infoDiv.appendChild(name);
+
+        let price = document.createElement("p");
+        price.className = "price-tag";
+        price.textContent = `$${parseFloat(product.Price).toFixed(2)}`;
+        infoDiv.appendChild(price);
+
+        let purchaseBtn = document.createElement("button");
+        purchaseBtn.textContent = "purchase";
+        purchaseBtn.id = `purchaseBtn-${index}`;
+        purchaseBtn.addEventListener("click", () => {
+          try {
+            let orders = JSON.parse(localStorage.getItem("orders")) || [];
+            let today = new Date();
+            let dateStr = `${String(today.getDate()).padStart(2, "0")}/${String(
+              today.getMonth() + 1
+            ).padStart(2, "0")}/${today.getFullYear()}`;
+
+            orders.push({
+              Date: dateStr,
+              category: product.CategoryId,
+              ProductName: product.ProductName,
+              Amount: product.Price,
+            });
+            localStorage.setItem("orders", JSON.stringify(orders));
+            alert(
+              `Purchased: ${product.ProductName} for $${parseFloat(
+                product.Price
+              ).toFixed(2)}`
+            );
+          } catch (e) {
+            alert("Error processing purchase. See console for details.");
+            console.error("Error processing purchase:", e);
+          }
+        });
+        infoDiv.appendChild(purchaseBtn);
+
+        // Append info to card, and card to container
+        productCard.appendChild(infoDiv);
+        productsContainer.appendChild(productCard);
+      });
+    </script>
+
+    <style>
+      /* --- The Grid Layout (Responsive Magic) --- */
+      .products-grid {
+        display: grid;
+        /* auto-fill + minmax ensures it fits mobile (1 col) and desktop (multi col) automatically */
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 30px;
+        padding: 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      /* --- The Card Design --- */
+      .product-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden; /* Ensures image doesn't poke out of rounded corners */
+        display: flex;
+        flex-direction: column; /* Stacks image on top of text */
+      }
+
+      .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+      }
+
+      /* --- The Image Styling --- */
+      .product-img {
+        width: 100%; /* Full width of the card */
+        height: 220px; /* Fixed height so all cards are same size */
+        object-fit: cover; /* CROPS the image to fit without stretching */
+        background-color: #f0f0f0; /* Placeholder color if image fails to load */
+      }
+
+      /* --- The Text Styling --- */
+      .card-info {
+        padding: 20px;
+        text-align: center;
+      }
+
+      .card-info h3 {
+        margin: 0 0 10px 0;
+        font-size: 1.2rem;
+        color: #333;
+      }
+
+      .price-tag {
+        font-weight: bold;
+        color: #6f4e37; /* Coffee color */
+        font-size: 1.1rem;
+        margin: 0;
+      }
+    </style>
   </body>
 </html>
-
-<script type="module">
-  import { loadNavbar } from "./navbar/navbar.js";
-  loadNavbar();
-
-  let params = new URLSearchParams(window.location.search);
-  let categoryId = params.get("category");
-  console.log("Category ID:", categoryId);
-
-  const products = JSON.parse(localStorage.getItem("products")) || [];
-
-  let filteredProducts = products.filter(
-    (product) => product.CategoryId.toString() === categoryId
-  );
-
-  console.log("Filtered Products:", filteredProducts);
-  let productsContainer = document.getElementById("products");
-  filteredProducts.forEach((product) => {
-    let productCard = document.createElement("div");
-    productCard.className = "product-card";
-
-    let img = document.createElement("img");
-    img.src = product.ImageUrl;
-    productCard.appendChild(img);
-
-    let name = document.createElement("h3");
-    name.textContent = product.ProductName;
-    productCard.appendChild(name);
-
-    let price = document.createElement("p");
-    price.textContent = `$${parseFloat(product.Price).toFixed(2)}`;
-    productCard.appendChild(price);
-
-    productsContainer.appendChild(productCard);
-    product.Priceint;
-  });
-</script>
