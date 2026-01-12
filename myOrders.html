@@ -38,7 +38,8 @@
     let orderCard = document.createElement("div");
     orderCard.className = "order-card";
 
-    let orderName = document.createElement("p");
+    let orderName = document.createElement("h2");
+    orderName.className = "product-name";
     orderName.textContent = order.ProductName;
     orderCard.appendChild(orderName);
 
@@ -59,16 +60,21 @@
   .orders-container {
     display: flex;
     flex-direction: column;
-    width: 700px;
+    width: 800px;
   }
   .order-card {
     /* display: flex; */
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc98;
     padding: 20px;
     border-radius: 8px;
-    margin-bottom: 20px;
-
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
     background-color: #f9f9f9;
+  }
+  p {
+    margin: 10px 0;
+  }
+  .product-name {
+    margin-bottom: 20px;
   }
 </style>
