@@ -116,66 +116,7 @@
     </script>
   </body>
 </html>
-<!-- <script type="module">
-  import { loadNavbar } from "./navbar/navbar.js";
-  loadNavbar();
 
-  document
-    .getElementById("jsonProdInput")
-    .addEventListener("change", function (event) {
-      console.log(event.target.files);
-      const file = event.target.files[0];
-
-      if (file) {
-        const reader = new FileReader();
-
-        reader.onload = function (e) {
-          try {
-            const jsonContent = e.target.result;
-            const data = JSON.parse(jsonContent);
-
-            localStorage.setItem("products", JSON.stringify(data));
-
-            alert("הקובץ נטען ונשמר בהצלחה!");
-            console.log("Data saved:", data);
-          } catch (error) {
-            console.error("שגיאה בפענוח הקובץ:", error);
-            alert("הקובץ אינו בפורמט JSON תקין");
-          }
-        };
-
-        reader.readAsText(file);
-      }
-    });
-
-  document
-    .getElementById("jsonOrdInput")
-    .addEventListener("change", function (event) {
-      console.log(event.target.files);
-      const file = event.target.files[0];
-
-      if (file) {
-        const reader = new FileReader();
-
-        reader.onload = function (e) {
-          try {
-            const jsonContent = e.target.result;
-            const data = JSON.parse(jsonContent);
-
-            localStorage.setItem("orders", JSON.stringify(data));
-
-            alert("הקובץ נטען ונשמר בהצלחה!");
-            console.log("Data saved:", data);
-          } catch (error) {
-            console.error("שגיאה בפענוח הקובץ:", error);
-            alert("הקובץ אינו בפורמט JSON תקין");
-          }
-        };
-
-        reader.readAsText(file);
-      }
-    });
-</script> -->
 <style>
   /* --- Global Styles --- */
   body {

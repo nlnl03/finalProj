@@ -48,16 +48,29 @@
         name.textContent = product.ProductName;
         infoDiv.appendChild(name);
 
-        let price = document.createElement("p");
-        price.className = "price-tag";
-        price.textContent = `$${parseFloat(product.Price).toFixed(2)}`;
-        infoDiv.appendChild(price);
+        let priceText = document.createElement("p");
+        priceText.className = "price-tag";
+
+        const price = parseFloat(product.Price).toFixed(2);
+        priceText.textContent = `$${price}`;
+        infoDiv.appendChild(priceText);
 
         let purchaseBtn = document.createElement("button");
         purchaseBtn.textContent = "purchase";
         purchaseBtn.id = `purchaseBtn-${index}`;
+
         purchaseBtn.addEventListener("click", () => {
           try {
+            let currentBalance =
+              parseFloat(localStorage.getItem("memberCardBalance")) || 0;
+
+            if (currentBalance < price) {
+              alert(
+                `Can not purchase ${product.ProductName} due to insufficient funds`
+              );
+              return;
+            }
+
             let orders = JSON.parse(localStorage.getItem("orders")) || [];
             let today = new Date();
             let dateStr = `${String(today.getDate()).padStart(2, "0")}/${String(
@@ -70,7 +83,9 @@
               ProductName: product.ProductName,
               Amount: product.Price,
             });
+            currentBalance = currentBalance - price;
             localStorage.setItem("orders", JSON.stringify(orders));
+            localStorage.setItem("memberCardBalance", currentBalance);
             alert(
               `Purchased: ${product.ProductName} for $${parseFloat(
                 product.Price
