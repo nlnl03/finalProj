@@ -8,8 +8,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
-    <header class="main-header" id="navbar"></header>
-
     <main class="dashboard-container">
       <section class="card greeting-card">
         <div class="greeting-text">
@@ -53,31 +51,11 @@
         </div>
       </section>
     </main>
-
-    <nav class="bottom-nav">
-      <a href="dashboard.html" class="nav-item active">
-        <span>🏠</span>
-        <small>Home</small>
-      </a>
-      <a href="categories.html" class="nav-item">
-        <span>☕</span>
-        <small>Menu</small>
-      </a>
-      <a href="wallet.html" class="nav-item">
-        <span>💳</span>
-        <small>Club</small>
-      </a>
-      <a href="admin.html" class="nav-item">
-        <span>⚙️</span>
-        <small>Admin</small>
-      </a>
-    </nav>
   </body>
 </html>
-<script type="module">
-  import { loadNavbar } from "./navbar/navbar.js";
-  loadNavbar();
 
+<script type="module" src="./navbar/navbar.js"></script>
+<script type="module">
   document.addEventListener("DOMContentLoaded", () => {
     // --- 1. Greeting & Time Logic ---
     const greetingEl = document.getElementById("greetingMsg");
@@ -350,35 +328,6 @@
     width: 100%;
   }
 
-  /* --- Bottom Nav --- */
-  .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: white;
-    border-top: 1px solid #ddd;
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
-    z-index: 1000;
-  }
-  .nav-item {
-    text-decoration: none;
-    color: #888;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    font-size: 0.8rem;
-  }
-  .nav-item span {
-    font-size: 1.4rem;
-    margin-bottom: 2px;
-  }
-  .nav-item.active {
-    color: #6f4e37;
-    font-weight: bold;
-  }
   canvas {
     margin-top: 30px;
   }

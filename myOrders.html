@@ -7,19 +7,16 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <header class="main-header" id="navbar"></header>
     <div class="main-page" id="mainPage">
       <div class="page-title"><h1>Your Orders</h1></div>
-      <div class="orders-container" id="orders"></div>
     </div>
   </body>
 </html>
 
+<script type="module" src="./navbar/navbar.js"></script>
 <script type="module">
-  import { loadNavbar } from "./navbar/navbar.js";
-  loadNavbar();
-
   let orders = JSON.parse(localStorage.getItem("orders")) || [];
+  let pageTitle = document.querySelector(".page-title");
 
   if (!orders || !orders.length) {
     const mainPage = document.getElementById("mainPage");
@@ -28,6 +25,8 @@
     const nTxt = document.createElement("h2");
     nTxt.textContent = "  Not found...";
     notFound.appendChild(nTxt);
+    pageTitle.insertAdjacentElement("afterend", notFound);
+
     mainPage.appendChild(notFound);
   } else {
     orders.sort(function (a, b) {
@@ -43,7 +42,9 @@
     });
 
     console.log(orders);
-    let ordersContainer = document.getElementById("orders");
+    const ordersContainer = document.createElement("div");
+    ordersContainer.className = "orders-container";
+
     orders.forEach((order) => {
       let orderCard = document.createElement("div");
       orderCard.className = "order-card";
@@ -63,6 +64,7 @@
       orderCard.appendChild(orderDate);
       orderCard.appendChild(totalAmount);
       ordersContainer.appendChild(orderCard);
+      pageTitle.insertAdjacentElement("afterend", ordersContainer);
     });
   }
 </script>

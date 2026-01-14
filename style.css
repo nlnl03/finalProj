@@ -1,5 +1,4 @@
 :root {
-  --main-title-color: #4a3b32;
   --main-p-color: #888;
 }
 body {
@@ -96,6 +95,130 @@ p {
 }
 .not-found {
   margin-top: 200px;
+  text-align: center;
 }
+
+/* ===== BASE NAV ===== */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: linear-gradient(135deg, #6f4e37, #8b5e3c);
+  color: #fff;
+  padding: 25px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ===== LEFT ===== */
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.app-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+/* ===== HAMBURGER ===== */
+.hamburger {
+  width: 30px;
+  height: 22px;
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.hamburger span {
+  height: 3px;
+  width: 100%;
+  background: #fff;
+  border-radius: 3px;
+  transition: transform 0.4s ease, opacity 0.3s ease;
+}
+
+/* Hamburger → X */
+.hamburger.active span:nth-child(1) {
+  transform: translateY(9px) rotate(45deg);
+}
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.active span:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg);
+}
+
+/* ===== LINKS (DESKTOP) ===== */
+.nav-links {
+  display: flex;
+  gap: 26px;
+}
+
+.nav-item {
+  color: #fff;
+  text-decoration: none;
+  position: relative;
+  padding-bottom: 4px;
+}
+
+/* Underline animation (same logic as example site) */
+.nav-item::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background: #f5c518;
+  transition: width 0.35s ease;
+}
+
+.nav-item:hover::after,
+.nav-item.current::after {
+  width: 100%;
+}
+
+/* ===== MOBILE BEHAVIOR ===== */
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-links {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+
+    background: #111;
+    flex-direction: column;
+    align-items: center;
+
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-10px);
+
+    transition: max-height 0.5s ease, opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  .nav-links.open {
+    max-height: 400px; /* enough for all items */
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .nav-item {
+    padding: 14px 0;
+    font-size: 1.1rem;
+  }
+}
+
 /* @media screen and (max-width: 400px) {
 } */

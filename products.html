@@ -9,166 +9,169 @@
   <body>
     <header class="main-header" id="navbar"></header>
     <div class="page-title"><h1></h1></div>
-    <div class="products-grid" id="products"></div>
-
-    <script type="module">
-      import { loadNavbar } from "./navbar/navbar.js";
-      loadNavbar();
-
-      let params = new URLSearchParams(window.location.search);
-      let categoryId = params.get("category");
-      let categoryName = params.get("name");
-      document.querySelector(".page-title h1").innerText = categoryName;
-
-      const products = JSON.parse(localStorage.getItem("products")) || [];
-      console.log(products);
-
-      if (!products || !products.length) {
-      } else {
-        let filteredProducts = products.filter(
-          (product) => product.CategoryId.toString() === categoryId
-        );
-
-        let productsContainer = document.getElementById("products");
-
-        filteredProducts.forEach((product, index) => {
-          let productCard = document.createElement("div");
-          productCard.className = "product-card";
-
-          // 1. Create Image
-          let img = document.createElement("img");
-          // Note: Make sure this path logic matches your actual file structure
-          img.src = product.ImageUrl;
-          img.className = "product-img"; // Added class for styling
-          img.alt = product.ProductName; // Good for accessibility
-          productCard.appendChild(img);
-
-          // 2. Create Content Wrapper (for padding)
-          let infoDiv = document.createElement("div");
-          infoDiv.className = "card-info";
-
-          let name = document.createElement("h3");
-          name.textContent = product.ProductName;
-          infoDiv.appendChild(name);
-
-          let priceText = document.createElement("p");
-          priceText.className = "price-tag";
-
-          const price = parseFloat(product.Price).toFixed(2);
-          priceText.textContent = `$${price}`;
-          infoDiv.appendChild(priceText);
-
-          let purchaseBtn = document.createElement("button");
-          purchaseBtn.textContent = "purchase";
-          purchaseBtn.id = `purchaseBtn-${index}`;
-
-          purchaseBtn.addEventListener("click", () => {
-            try {
-              let currentBalance =
-                parseFloat(localStorage.getItem("memberCardBalance")) || 0;
-
-              if (currentBalance < price) {
-                alert(
-                  `Can not purchase ${product.ProductName} due to insufficient funds`
-                );
-                return;
-              }
-
-              let orders = JSON.parse(localStorage.getItem("orders")) || [];
-              let today = new Date();
-              let dateStr = `${String(today.getDate()).padStart(
-                2,
-                "0"
-              )}/${String(today.getMonth() + 1).padStart(
-                2,
-                "0"
-              )}/${today.getFullYear()}`;
-
-              orders.push({
-                Date: dateStr,
-                category: product.CategoryId,
-                ProductName: product.ProductName,
-                Amount: product.Price,
-              });
-              currentBalance = currentBalance - price;
-              localStorage.setItem("orders", JSON.stringify(orders));
-              localStorage.setItem("memberCardBalance", currentBalance);
-              alert(
-                `Purchased: ${product.ProductName} for $${parseFloat(
-                  product.Price
-                ).toFixed(2)}`
-              );
-            } catch (e) {
-              alert("Error processing purchase. See console for details.");
-              console.error("Error processing purchase:", e);
-            }
-          });
-          infoDiv.appendChild(purchaseBtn);
-
-          // Append info to card, and card to container
-          productCard.appendChild(infoDiv);
-          productsContainer.appendChild(productCard);
-        });
-      }
-    </script>
-
-    <style>
-      /* --- The Grid Layout (Responsive Magic) --- */
-      .products-grid {
-        display: grid;
-        /* auto-fill + minmax ensures it fits mobile (1 col) and desktop (multi col) automatically */
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 30px;
-        padding: 40px;
-        max-width: 1200px;
-        margin: 0 auto;
-      }
-      .page-title {
-        margin-top: 50px;
-        margin-bottom: 10px;
-      }
-      /* --- The Card Design --- */
-      .product-card {
-        background: white;
-        border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        overflow: hidden; /* Ensures image doesn't poke out of rounded corners */
-        display: flex;
-        flex-direction: column; /* Stacks image on top of text */
-      }
-
-      .product-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-      }
-
-      /* --- The Image Styling --- */
-      .product-img {
-        width: 100%; /* Full width of the card */
-        height: 220px; /* Fixed height so all cards are same size */
-        object-fit: cover; /* CROPS the image to fit without stretching */
-        background-color: #f0f0f0; /* Placeholder color if image fails to load */
-      }
-
-      /* --- The Text Styling --- */
-      .card-info {
-        padding: 20px;
-        text-align: center;
-      }
-
-      .card-info h3 {
-        margin: 0 0 10px 0;
-        font-size: 1.2rem;
-        color: #333;
-      }
-
-      .price-tag {
-        font-weight: bold;
-        color: #6f4e37; /* Coffee color */
-        font-size: 1.1rem;
-        margin: 0;
-      }
-    </style>
   </body>
 </html>
+
+<script type="module" src="./navbar/navbar.js"></script>
+<script type="module">
+  let params = new URLSearchParams(window.location.search);
+  let categoryId = params.get("category");
+  let categoryName = params.get("name");
+  document.querySelector(".page-title h1").innerText = categoryName;
+
+  const products = JSON.parse(localStorage.getItem("products")) || [];
+  console.log(products);
+
+  let pageTitle = document.querySelector(".page-title");
+
+  if (!products || !products.length) {
+    const notFound = document.createElement("div");
+    notFound.className = "not-found";
+    const nTxt = document.createElement("h2");
+    nTxt.textContent = "Not found...";
+    notFound.appendChild(nTxt);
+    pageTitle.insertAdjacentElement("afterend", notFound);
+  } else {
+    let productsContainer = document.createElement("div");
+    productsContainer.className = "products-grid";
+
+    let filteredProducts = products.filter(
+      (product) => product.CategoryId.toString() === categoryId
+    );
+
+    filteredProducts.forEach((product, index) => {
+      let productCard = document.createElement("div");
+      productCard.className = "product-card";
+
+      // 1. Create Image
+      let img = document.createElement("img");
+      // Note: Make sure this path logic matches your actual file structure
+      img.src = product.ImageUrl;
+      img.className = "product-img"; // Added class for styling
+      img.alt = product.ProductName; // Good for accessibility
+      productCard.appendChild(img);
+
+      // 2. Create Content Wrapper (for padding)
+      let infoDiv = document.createElement("div");
+      infoDiv.className = "card-info";
+
+      let name = document.createElement("h3");
+      name.textContent = product.ProductName;
+      infoDiv.appendChild(name);
+
+      let priceText = document.createElement("p");
+      priceText.className = "price-tag";
+
+      const price = parseFloat(product.Price).toFixed(2);
+      priceText.textContent = `$${price}`;
+      infoDiv.appendChild(priceText);
+
+      let purchaseBtn = document.createElement("button");
+      purchaseBtn.textContent = "purchase";
+      purchaseBtn.id = `purchaseBtn-${index}`;
+
+      purchaseBtn.addEventListener("click", () => {
+        try {
+          let currentBalance =
+            parseFloat(localStorage.getItem("memberCardBalance")) || 0;
+
+          if (currentBalance < price) {
+            alert(
+              `Can not purchase ${product.ProductName} due to insufficient funds`
+            );
+            return;
+          }
+
+          let orders = JSON.parse(localStorage.getItem("orders")) || [];
+          let today = new Date();
+          let dateStr = `${String(today.getDate()).padStart(2, "0")}/${String(
+            today.getMonth() + 1
+          ).padStart(2, "0")}/${today.getFullYear()}`;
+
+          orders.push({
+            Date: dateStr,
+            category: product.CategoryId,
+            ProductName: product.ProductName,
+            Amount: product.Price,
+          });
+          currentBalance = currentBalance - price;
+          localStorage.setItem("orders", JSON.stringify(orders));
+          localStorage.setItem("memberCardBalance", currentBalance);
+          alert(
+            `Purchased: ${product.ProductName} for $${parseFloat(
+              product.Price
+            ).toFixed(2)}`
+          );
+        } catch (e) {
+          alert("Error processing purchase. See console for details.");
+          console.error("Error processing purchase:", e);
+        }
+      });
+      infoDiv.appendChild(purchaseBtn);
+
+      // Append info to card, and card to container
+      productCard.appendChild(infoDiv);
+      productsContainer.appendChild(productCard);
+      pageTitle.insertAdjacentElement("afterend", productsContainer);
+    });
+  }
+</script>
+
+<style>
+  /* --- The Grid Layout (Responsive Magic) --- */
+  .products-grid {
+    display: grid;
+    /* auto-fill + minmax ensures it fits mobile (1 col) and desktop (multi col) automatically */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .page-title {
+    margin-top: 50px;
+    margin-bottom: 10px;
+  }
+  /* --- The Card Design --- */
+  .product-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden; /* Ensures image doesn't poke out of rounded corners */
+    display: flex;
+    flex-direction: column; /* Stacks image on top of text */
+  }
+
+  .product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  }
+
+  /* --- The Image Styling --- */
+  .product-img {
+    width: 100%; /* Full width of the card */
+    height: 220px; /* Fixed height so all cards are same size */
+    object-fit: cover; /* CROPS the image to fit without stretching */
+    background-color: #f0f0f0; /* Placeholder color if image fails to load */
+  }
+
+  /* --- The Text Styling --- */
+  .card-info {
+    padding: 20px;
+    text-align: center;
+  }
+
+  .card-info h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.2rem;
+    color: #333;
+  }
+
+  .price-tag {
+    font-weight: bold;
+    color: #6f4e37; /* Coffee color */
+    font-size: 1.1rem;
+    margin: 0;
+  }
+</style>

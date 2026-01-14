@@ -8,8 +8,6 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <header class="main-header" id="navbar"></header>
-
     <div class="admin-container">
       <header class="admin-header">
         <h1>Management Dashboard</h1>
@@ -78,10 +76,8 @@
       </div>
     </div>
 
+    <script type="module" src="./navbar/navbar.js"></script>
     <script type="module">
-      import { loadNavbar } from "./navbar/navbar.js";
-      loadNavbar();
-
       function updateFileName(inputId, spanId) {
         document
           .getElementById(inputId)

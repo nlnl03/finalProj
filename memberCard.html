@@ -7,7 +7,6 @@
     <title>Member card</title>
   </head>
   <body>
-    <header class="main-header" id="navbar"></header>
     <div class="main-page">
       <div class="wallet-container">
         <h2>Member Club Card</h2>
@@ -40,10 +39,8 @@
   </body>
 </html>
 
+<script type="module" src="./navbar/navbar.js"></script>
 <script type="module">
-  import { loadNavbar } from "./navbar/navbar.js";
-  loadNavbar();
-
   let currentBalance =
     parseFloat(localStorage.getItem("memberCardBalance")) || 0;
   updateDisplay();
