@@ -8,7 +8,7 @@
   </head>
   <body>
     <header class="main-header" id="navbar"></header>
-    <div class="main-page">
+    <div class="main-page" id="mainPage">
       <div class="page-title"><h1>Your Orders</h1></div>
       <div class="orders-container" id="orders"></div>
     </div>
@@ -20,40 +20,51 @@
   loadNavbar();
 
   let orders = JSON.parse(localStorage.getItem("orders")) || [];
-  orders.sort(function (a, b) {
-    function toDateObj(dateStr) {
-      const parts = dateStr.split("/");
-      return new Date(parts[2], parts[1] - 1, parts[0]);
-    }
 
-    const dateA = toDateObj(a.Date);
-    const dateB = toDateObj(b.Date);
+  if (!orders || !orders.length) {
+    const mainPage = document.getElementById("mainPage");
+    const notFound = document.createElement("div");
+    notFound.className = "not-found";
+    const nTxt = document.createElement("h2");
+    nTxt.textContent = "  Not found...";
+    notFound.appendChild(nTxt);
+    mainPage.appendChild(notFound);
+  } else {
+    orders.sort(function (a, b) {
+      function toDateObj(dateStr) {
+        const parts = dateStr.split("/");
+        return new Date(parts[2], parts[1] - 1, parts[0]);
+      }
 
-    return dateB - dateA;
-  });
+      const dateA = toDateObj(a.Date);
+      const dateB = toDateObj(b.Date);
 
-  console.log(orders);
-  let ordersContainer = document.getElementById("orders");
-  orders.forEach((order) => {
-    let orderCard = document.createElement("div");
-    orderCard.className = "order-card";
+      return dateB - dateA;
+    });
 
-    let orderName = document.createElement("h2");
-    orderName.className = "product-name";
-    orderName.textContent = order.ProductName;
-    orderCard.appendChild(orderName);
+    console.log(orders);
+    let ordersContainer = document.getElementById("orders");
+    orders.forEach((order) => {
+      let orderCard = document.createElement("div");
+      orderCard.className = "order-card";
 
-    let totalAmount = document.createElement("p");
-    totalAmount.textContent = `Total Amount: $${parseFloat(
-      order.Amount
-    ).toFixed(2)}`;
+      let orderName = document.createElement("h2");
+      orderName.className = "product-name";
+      orderName.textContent = order.ProductName;
+      orderCard.appendChild(orderName);
 
-    let orderDate = document.createElement("p");
-    orderDate.textContent = `Date: ${order.Date}`;
-    orderCard.appendChild(orderDate);
-    orderCard.appendChild(totalAmount);
-    ordersContainer.appendChild(orderCard);
-  });
+      let totalAmount = document.createElement("p");
+      totalAmount.textContent = `Total Amount: $${parseFloat(
+        order.Amount
+      ).toFixed(2)}`;
+
+      let orderDate = document.createElement("p");
+      orderDate.textContent = `Date: ${order.Date}`;
+      orderCard.appendChild(orderDate);
+      orderCard.appendChild(totalAmount);
+      ordersContainer.appendChild(orderCard);
+    });
+  }
 </script>
 
 <style>

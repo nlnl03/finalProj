@@ -22,86 +22,94 @@
 
       const products = JSON.parse(localStorage.getItem("products")) || [];
       console.log(products);
-      let filteredProducts = products.filter(
-        (product) => product.CategoryId.toString() === categoryId
-      );
 
-      let productsContainer = document.getElementById("products");
+      if (!products || !products.length) {
+      } else {
+        let filteredProducts = products.filter(
+          (product) => product.CategoryId.toString() === categoryId
+        );
 
-      filteredProducts.forEach((product, index) => {
-        let productCard = document.createElement("div");
-        productCard.className = "product-card";
+        let productsContainer = document.getElementById("products");
 
-        // 1. Create Image
-        let img = document.createElement("img");
-        // Note: Make sure this path logic matches your actual file structure
-        img.src = product.ImageUrl;
-        img.className = "product-img"; // Added class for styling
-        img.alt = product.ProductName; // Good for accessibility
-        productCard.appendChild(img);
+        filteredProducts.forEach((product, index) => {
+          let productCard = document.createElement("div");
+          productCard.className = "product-card";
 
-        // 2. Create Content Wrapper (for padding)
-        let infoDiv = document.createElement("div");
-        infoDiv.className = "card-info";
+          // 1. Create Image
+          let img = document.createElement("img");
+          // Note: Make sure this path logic matches your actual file structure
+          img.src = product.ImageUrl;
+          img.className = "product-img"; // Added class for styling
+          img.alt = product.ProductName; // Good for accessibility
+          productCard.appendChild(img);
 
-        let name = document.createElement("h3");
-        name.textContent = product.ProductName;
-        infoDiv.appendChild(name);
+          // 2. Create Content Wrapper (for padding)
+          let infoDiv = document.createElement("div");
+          infoDiv.className = "card-info";
 
-        let priceText = document.createElement("p");
-        priceText.className = "price-tag";
+          let name = document.createElement("h3");
+          name.textContent = product.ProductName;
+          infoDiv.appendChild(name);
 
-        const price = parseFloat(product.Price).toFixed(2);
-        priceText.textContent = `$${price}`;
-        infoDiv.appendChild(priceText);
+          let priceText = document.createElement("p");
+          priceText.className = "price-tag";
 
-        let purchaseBtn = document.createElement("button");
-        purchaseBtn.textContent = "purchase";
-        purchaseBtn.id = `purchaseBtn-${index}`;
+          const price = parseFloat(product.Price).toFixed(2);
+          priceText.textContent = `$${price}`;
+          infoDiv.appendChild(priceText);
 
-        purchaseBtn.addEventListener("click", () => {
-          try {
-            let currentBalance =
-              parseFloat(localStorage.getItem("memberCardBalance")) || 0;
+          let purchaseBtn = document.createElement("button");
+          purchaseBtn.textContent = "purchase";
+          purchaseBtn.id = `purchaseBtn-${index}`;
 
-            if (currentBalance < price) {
+          purchaseBtn.addEventListener("click", () => {
+            try {
+              let currentBalance =
+                parseFloat(localStorage.getItem("memberCardBalance")) || 0;
+
+              if (currentBalance < price) {
+                alert(
+                  `Can not purchase ${product.ProductName} due to insufficient funds`
+                );
+                return;
+              }
+
+              let orders = JSON.parse(localStorage.getItem("orders")) || [];
+              let today = new Date();
+              let dateStr = `${String(today.getDate()).padStart(
+                2,
+                "0"
+              )}/${String(today.getMonth() + 1).padStart(
+                2,
+                "0"
+              )}/${today.getFullYear()}`;
+
+              orders.push({
+                Date: dateStr,
+                category: product.CategoryId,
+                ProductName: product.ProductName,
+                Amount: product.Price,
+              });
+              currentBalance = currentBalance - price;
+              localStorage.setItem("orders", JSON.stringify(orders));
+              localStorage.setItem("memberCardBalance", currentBalance);
               alert(
-                `Can not purchase ${product.ProductName} due to insufficient funds`
+                `Purchased: ${product.ProductName} for $${parseFloat(
+                  product.Price
+                ).toFixed(2)}`
               );
-              return;
+            } catch (e) {
+              alert("Error processing purchase. See console for details.");
+              console.error("Error processing purchase:", e);
             }
+          });
+          infoDiv.appendChild(purchaseBtn);
 
-            let orders = JSON.parse(localStorage.getItem("orders")) || [];
-            let today = new Date();
-            let dateStr = `${String(today.getDate()).padStart(2, "0")}/${String(
-              today.getMonth() + 1
-            ).padStart(2, "0")}/${today.getFullYear()}`;
-
-            orders.push({
-              Date: dateStr,
-              category: product.CategoryId,
-              ProductName: product.ProductName,
-              Amount: product.Price,
-            });
-            currentBalance = currentBalance - price;
-            localStorage.setItem("orders", JSON.stringify(orders));
-            localStorage.setItem("memberCardBalance", currentBalance);
-            alert(
-              `Purchased: ${product.ProductName} for $${parseFloat(
-                product.Price
-              ).toFixed(2)}`
-            );
-          } catch (e) {
-            alert("Error processing purchase. See console for details.");
-            console.error("Error processing purchase:", e);
-          }
+          // Append info to card, and card to container
+          productCard.appendChild(infoDiv);
+          productsContainer.appendChild(productCard);
         });
-        infoDiv.appendChild(purchaseBtn);
-
-        // Append info to card, and card to container
-        productCard.appendChild(infoDiv);
-        productsContainer.appendChild(productCard);
-      });
+      }
     </script>
 
     <style>

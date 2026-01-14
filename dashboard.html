@@ -3,21 +3,383 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Coffee shop</title>
+    <title>Cafe Byte & Brew - Dashboard</title>
     <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
     <header class="main-header" id="navbar"></header>
-    <div class="main-container">
-      <div class="hello-message">
-        <h1>Welcome to our Coffee Shop Dashboard</h1>
-        <p>Manage your products, orders, and customers all in one place.</p>
-      </div>
-    </div>
-  </body>
 
-  <script type="module">
-    import { loadNavbar } from "./navbar/navbar.js";
-    loadNavbar();
-  </script>
+    <main class="dashboard-container">
+      <section class="card greeting-card">
+        <div class="greeting-text">
+          <h2 id="greetingMsg">Good Morning, Guest!</h2>
+          <p id="currentDate">Loading date...</p>
+        </div>
+      </section>
+
+      <a href="categories.html" class="card menu-link-card">
+        <img
+          src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=800&auto=format&fit=crop"
+          alt="Coffee Menu"
+        />
+        <div class="menu-overlay">
+          <span>View Menu</span>
+        </div>
+      </a>
+
+      <a href="./memberCard.html" class="card club-card">
+        <div class="card-icon">💳</div>
+        <div>
+          <h3>My Coffee Credit</h3>
+          <div class="balance" id="dashBalance"></div>
+          <small>Tap to load funds</small>
+        </div>
+      </a>
+
+      <a href="./myOrders.html" class="card orders-card">
+        <div class="card-header">
+          <h3>My Recent Orders</h3>
+        </div>
+        <ul class="latest-orders" id="latestOrders">
+          <li>No recent orders found.</li>
+        </ul>
+      </a>
+
+      <section class="card stats-card">
+        <h3>Consumption Stats</h3>
+        <div class="chart-container">
+          <canvas id="myChart"></canvas>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <a href="dashboard.html" class="nav-item active">
+        <span>🏠</span>
+        <small>Home</small>
+      </a>
+      <a href="categories.html" class="nav-item">
+        <span>☕</span>
+        <small>Menu</small>
+      </a>
+      <a href="wallet.html" class="nav-item">
+        <span>💳</span>
+        <small>Club</small>
+      </a>
+      <a href="admin.html" class="nav-item">
+        <span>⚙️</span>
+        <small>Admin</small>
+      </a>
+    </nav>
+  </body>
 </html>
+<script type="module">
+  import { loadNavbar } from "./navbar/navbar.js";
+  loadNavbar();
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // --- 1. Greeting & Time Logic ---
+    const greetingEl = document.getElementById("greetingMsg");
+    const dateEl = document.getElementById("currentDate");
+
+    // Set Date
+    const now = new Date();
+    const options = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+    dateEl.textContent = now.toLocaleDateString("he-IL", options);
+
+    // Set Greeting based on hour
+    const hour = now.getHours();
+    let timeGreeting = "Good Morning";
+    if (hour >= 12 && hour < 18) timeGreeting = "Good Afternoon";
+    else if (hour >= 18) timeGreeting = "Good Evening";
+
+    // Get User Name (Optional feature from PDF)
+    const userName = localStorage.getItem("user") || "Guest";
+    greetingEl.textContent = `${timeGreeting}, ${userName}!`;
+
+    // --- 2. Load Credit Balance ---
+    const balanceEl = document.getElementById("dashBalance");
+    const balance = parseFloat(localStorage.getItem("memberCardBalance")) || 0;
+    balanceEl.textContent = `$${balance.toFixed(2)}`;
+
+    // --- 3. Mini Order List (Last 3 items) ---
+    const orderListEl = document.getElementById("latestOrders");
+    const orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+    if (orders.length > 0) {
+      orderListEl.innerHTML = ""; // Clear "no orders" text
+      // Take last 3 orders (assuming new ones are added at the end)
+      const recentOrders = orders.slice(-3).reverse();
+
+      recentOrders.forEach((order) => {
+        const li = document.createElement("li");
+        li.innerHTML = `<span>${order.ProductName}</span> <span>$${order.Amount}</span>`;
+        orderListEl.appendChild(li);
+      });
+    }
+
+    // --- 4. Render Chart (Chart.js) ---
+    const ctx = document.getElementById("myChart").getContext("2d");
+
+    // Fake data for visual if no real data exists yet
+    // In a real scenario, you would calculate this from the 'orders' array
+    const chartData = {
+      labels: ["Coffee", "Pastry", "Salad", "Sandwich", "Toast"],
+      datasets: [
+        {
+          label: "# of Orders",
+          data: [12, 19, 3, 5, 2], // You can replace this with dynamic counts later
+          backgroundColor: [
+            "rgba(111, 78, 55, 0.6)", // Coffee Brown
+            "rgba(193, 154, 107, 0.6)",
+            "rgba(111, 78, 55, 0.4)",
+            "rgba(193, 154, 107, 0.4)",
+            "rgba(111, 78, 55, 0.2)",
+          ],
+          borderColor: [
+            "rgba(111, 78, 55, 1)",
+            "rgba(193, 154, 107, 1)",
+            "rgba(111, 78, 55, 1)",
+            "rgba(193, 154, 107, 1)",
+            "rgba(111, 78, 55, 1)",
+          ],
+          borderWidth: 1,
+        },
+      ],
+    };
+
+    new Chart(ctx, {
+      type: "bar", // Histogram style
+      data: chartData,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { beginAtZero: true },
+        },
+        plugins: {
+          legend: { display: false }, // Hide legend to save space
+        },
+      },
+    });
+  });
+</script>
+
+<style>
+  /* --- Dashboard Layout --- */
+  body {
+    background-color: #f8f5f2;
+    margin: 0;
+    padding-bottom: 80px; /* Space for bottom nav */
+    font-family: "Segoe UI", sans-serif;
+  }
+
+  .dashboard-header {
+    background: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .dashboard-header h1 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #6f4e37;
+  }
+
+  /* --- The Grid System --- */
+  .dashboard-container {
+    margin-top: 50px !important;
+    display: grid;
+    padding: 20px;
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+
+    /* Mobile First: 1 Column */
+    grid-template-columns: 1fr;
+
+    /* Layout Areas */
+    grid-template-areas:
+      "greeting"
+      "menu"
+      "club"
+      "orders"
+      "stats";
+  }
+
+  /* --- Desktop Layout (Tablet and up) --- */
+  @media (min-width: 768px) {
+    .dashboard-container {
+      grid-template-columns: 1fr 1fr; /* 2 Columns */
+      grid-template-areas:
+        "greeting greeting"
+        "menu stats"
+        "club orders";
+    }
+
+    .stats-card {
+      height: 100%; /* Match height of menu card */
+    }
+  }
+
+  /* --- Card Styles --- */
+  .card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s;
+    text-decoration: none;
+    color: inherit;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .card:hover {
+    transform: translateY(-3px);
+  }
+
+  /* A. Greeting */
+  .greeting-card {
+    grid-area: greeting;
+    border-left: 5px solid #6f4e37;
+  }
+  .greeting-text {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  .greeting-text p {
+    margin: 5px 0 0;
+    color: #777;
+    font-size: 0.9rem;
+  }
+
+  /* D. Menu Image */
+  .menu-link-card {
+    grid-area: menu;
+    padding: 0;
+    display: block;
+  }
+  .menu-link-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .menu-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  /* C. Club Card */
+  .club-card {
+    grid-area: club;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: linear-gradient(135deg, #6f4e37, #8b5e3c);
+    color: white;
+  }
+  .card-icon {
+    font-size: 2.5rem;
+  }
+  .club-card h3 {
+    margin: 0;
+    font-size: 1rem;
+    opacity: 0.9;
+  }
+  .club-card .balance {
+    font-size: 1.8rem;
+    font-weight: bold;
+  }
+  .club-card small {
+    opacity: 0.8;
+  }
+
+  /* B. Orders Shortcut */
+  .orders-card {
+    grid-area: orders;
+  }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .latest-orders {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .latest-orders li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* E. Graph */
+  .stats-card {
+    grid-area: stats;
+  }
+  .chart-container {
+    position: relative;
+    height: 200px;
+    width: 100%;
+  }
+
+  /* --- Bottom Nav --- */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    z-index: 1000;
+  }
+  .nav-item {
+    text-decoration: none;
+    color: #888;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    font-size: 0.8rem;
+  }
+  .nav-item span {
+    font-size: 1.4rem;
+    margin-bottom: 2px;
+  }
+  .nav-item.active {
+    color: #6f4e37;
+    font-weight: bold;
+  }
+  canvas {
+    margin-top: 30px;
+  }
+</style>

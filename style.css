@@ -1,3 +1,7 @@
+:root {
+  --main-title-color: #4a3b32;
+  --main-p-color: #888;
+}
 body {
   font-family: "Inter", sans-serif;
   background-color: #f4f1ea;
@@ -31,13 +35,21 @@ html {
 }
 
 .main-header {
-  background-color: #c0c0c0a1;
+  background: white;
+  padding: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s;
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  position: relative;
+  /* background-color: #c0c0c0a1; */
   height: 110px;
   z-index: 100;
 }
 a {
   text-decoration: none;
-  color: black;
+  color: var(--main-title-color);
 }
 
 .main-container {
@@ -70,6 +82,20 @@ h1 {
   font-size: clamp(1.5rem, 13vw, 3rem);
   text-align: center;
 }
+h2 {
+  font-size: clamp(0.9rem, 7vw, 1.5rem);
+}
+h1,
+h2 {
+  color: var(--main-title-color);
+}
 
+p {
+  color: var(--main-p-color);
+  font-weight: 600;
+}
+.not-found {
+  margin-top: 200px;
+}
 /* @media screen and (max-width: 400px) {
 } */
