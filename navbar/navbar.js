@@ -19,7 +19,15 @@ export function loadNavbar() {
   const title = document.createElement("a");
   title.href = "./dashboard.html";
   title.className = "app-title";
-  title.textContent = "Cafe App";
+
+  const logo = document.createElement("img");
+  logo.src = "./assets/logo.png";
+  logo.className = "main-logo";
+
+  title.appendChild(logo);
+  const text = document.createElement("span");
+  text.textContent = "YUMMI's Cafe";
+  title.appendChild(text);
 
   left.append(title, hamburger);
 

@@ -15,8 +15,11 @@
 
 <script type="module" src="./navbar/navbar.js"></script>
 <script type="module">
-  let orders = JSON.parse(localStorage.getItem("orders")) || [];
-  let pageTitle = document.querySelector(".page-title");
+  import { getSortedOrders } from "./utilities/utils.js";
+  const orders = getSortedOrders();
+  console.log(orders);
+
+  const pageTitle = document.querySelector(".page-title");
 
   if (!orders || !orders.length) {
     const mainPage = document.getElementById("mainPage");
@@ -26,40 +29,26 @@
     nTxt.textContent = "  Not found...";
     notFound.appendChild(nTxt);
     pageTitle.insertAdjacentElement("afterend", notFound);
-
     mainPage.appendChild(notFound);
   } else {
-    orders.sort(function (a, b) {
-      function toDateObj(dateStr) {
-        const parts = dateStr.split("/");
-        return new Date(parts[2], parts[1] - 1, parts[0]);
-      }
-
-      const dateA = toDateObj(a.Date);
-      const dateB = toDateObj(b.Date);
-
-      return dateB - dateA;
-    });
-
-    console.log(orders);
     const ordersContainer = document.createElement("div");
     ordersContainer.className = "orders-container";
 
     orders.forEach((order) => {
-      let orderCard = document.createElement("div");
+      const orderCard = document.createElement("div");
       orderCard.className = "order-card";
 
-      let orderName = document.createElement("h2");
+      const orderName = document.createElement("h2");
       orderName.className = "product-name";
       orderName.textContent = order.ProductName;
       orderCard.appendChild(orderName);
 
-      let totalAmount = document.createElement("p");
+      const totalAmount = document.createElement("p");
       totalAmount.textContent = `Total Amount: $${parseFloat(
         order.Amount
       ).toFixed(2)}`;
 
-      let orderDate = document.createElement("p");
+      const orderDate = document.createElement("p");
       orderDate.textContent = `Date: ${order.Date}`;
       orderCard.appendChild(orderDate);
       orderCard.appendChild(totalAmount);
@@ -68,84 +57,3 @@
     });
   }
 </script>
-
-<style>
-  /* --- Global Reset for this page --- */
-
-  .main-page {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Centers the grid container */
-    padding: 20px;
-  }
-
-  .page-title h1 {
-    margin-bottom: 20px;
-  }
-
-  /* --- Responsive Grid Container --- */
-  .orders-container {
-    display: grid; /* Use Grid */
-    grid-template-columns: 1fr; /* 1 Column layout */
-    gap: 20px; /* Space between cards */
-    width: 100%; /* Take full width on mobile */
-    max-width: 750px; /* Limit width on desktop */
-
-    /* No fixed width means it shrinks automatically on mobile */
-  }
-
-  /* --- Card Styling --- */
-  .order-card {
-    background-color: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    padding: 25px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Softer shadow */
-    transition: transform 0.2s ease;
-
-    /* Flex to align text inside nicely */
-    display: flex;
-    flex-direction: column;
-  }
-
-  .order-card:hover {
-    transform: translateY(-3px);
-    border-color: #6f4e37;
-  }
-
-  .product-name {
-    margin: 0 0 15px 0;
-    font-size: 1.4rem;
-  }
-
-  p {
-    margin: 5px 0;
-  }
-
-  .price-text {
-    font-weight: bold;
-    color: #6f4e37;
-    font-size: 1.1rem;
-  }
-
-  /* --- Mobile Specific Adjustments --- */
-  @media (max-width: 768px) {
-    .orders-container {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      min-width: 148px;
-    }
-    .main-page {
-      padding: 10px;
-    }
-
-    .order-card {
-      padding: 15px;
-    }
-
-    .product-name {
-      font-size: 1.2rem;
-    }
-  }
-</style>

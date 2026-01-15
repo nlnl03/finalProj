@@ -8,9 +8,10 @@
   </head>
   <body>
     <div class="main-page">
+      <div class="page-title">
+        <h1>Member Club Card</h1>
+      </div>
       <div class="wallet-container">
-        <h2>Member Club Card</h2>
-
         <div class="credit-card-flex">
           <div class="credit-card">
             <div class="card-chip"></div>
@@ -32,7 +33,6 @@
             <input type="number" id="money2add" placeholder="0.00" min="1" />
             <button id="addFundsBtn" disabled>Load Card</button>
           </div>
-          <div id="message"></div>
         </div>
       </div>
     </div>
@@ -45,14 +45,14 @@
     parseFloat(localStorage.getItem("memberCardBalance")) || 0;
   updateDisplay();
 
-  let money2add = document.getElementById("money2add");
+  const money2add = document.getElementById("money2add");
 
   money2add.addEventListener("input", validation);
 
-  let addFundsBtn = document.getElementById("addFundsBtn");
+  const addFundsBtn = document.getElementById("addFundsBtn");
 
   function validation() {
-    let amount = parseFloat(money2add.value);
+    const amount = parseFloat(money2add.value);
 
     if (!isNaN(amount) && amount > 0) {
       addFundsBtn.disabled = false;
@@ -85,157 +85,3 @@
       "$" + currentBalance.toFixed(2);
   }
 </script>
-<style>
-  .main-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px; /* Prevents card touching edges on mobile */
-    box-sizing: border-box;
-  }
-  .wallet-container {
-    background: white;
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    max-width: 800px;
-    height: 550px;
-    width: 100%;
-  }
-
-  h2 {
-    margin-bottom: 20px;
-    margin-top: 0;
-  }
-  .credit-card-flex {
-    display: flex;
-    justify-content: center;
-  }
-  /* --- The Credit Card Graphic --- */
-  .credit-card {
-    background: linear-gradient(135deg, #6f4e37, #a0522d);
-    color: white;
-    border-radius: 15px;
-    padding: 25px;
-    text-align: left;
-    box-shadow: 0 8px 20px rgba(111, 78, 55, 0.4);
-    margin-bottom: 30px;
-    position: relative;
-    width: 50%;
-    min-width: 100px;
-    height: 180px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-
-  .card-chip {
-    width: 40px;
-    height: 30px;
-    background: linear-gradient(to bottom right, #ffd700, #b8860b);
-    border-radius: 5px;
-    margin-bottom: 10px;
-  }
-
-  .card-label {
-    font-size: 0.8rem;
-    opacity: 0.8;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  .card-balance {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin: 5px 0;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-  }
-
-  .card-number {
-    font-size: 1.1rem;
-    letter-spacing: 2px;
-    margin-top: auto;
-    font-family: "Courier New", Courier, monospace;
-  }
-
-  /* --- Input & Button Section --- */
-  .actions-form {
-    display: flex;
-    gap: 15px;
-    flex-direction: column;
-  }
-
-  .input-group {
-    gap: 10px;
-  }
-
-  input[type="number"] {
-    padding: 12px;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    font-size: 1rem;
-    flex: 1;
-    outline: none;
-    /* Prevents zooming on iPhone when clicking input */
-    font-size: 16px;
-  }
-
-  input[type="number"]:focus {
-    border-color: #6f4e37;
-  }
-
-  button {
-    background-color: #6f4e37;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    font-size: 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background 0.2s;
-    white-space: nowrap; /* Keeps text on one line */
-  }
-
-  button:hover {
-    background-color: #5a3e2b;
-  }
-
-  #message {
-    margin-top: 10px;
-    font-size: 0.9rem;
-    height: 20px;
-  }
-
-  /* --- MOBILE OPTIMIZATION --- */
-  @media (max-width: 480px) {
-    .main-page {
-      margin: 10px;
-    }
-    .wallet-container {
-      padding: 25px 20px; /* Reduce padding to give more space to content */
-    }
-
-    .credit-card {
-      padding: 20px;
-      height: 160px; /* Slightly smaller card height */
-    }
-
-    .card-balance {
-      font-size: 2rem; /* Slightly smaller text to prevent wrapping */
-    }
-
-    /* Stack input and button vertically on mobile */
-    .input-group {
-      display: flex;
-      gap: 10px;
-      flex-direction: column;
-    }
-
-    button {
-      width: 100%; /* Full width button is easier to tap */
-      padding: 15px; /* Taller button for touch targets */
-    }
-  }
-</style>

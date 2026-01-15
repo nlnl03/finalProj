@@ -16,29 +16,7 @@
         <input type="password" id="loginPass" placeholder="Password" />
 
         <button onclick="handleLogin()">Log In</button>
-        <p class="switch-text">
-          New here? <span onclick="showRegister()">Create an account</span>
-        </p>
         <p id="loginError" class="error-msg"></p>
-      </div>
-
-      <div id="registerForm" class="form-wrapper hidden">
-        <h2>Create Account</h2>
-        <p>Join our Coffee Club</p>
-
-        <input type="email" id="regEmail" placeholder="Email Address" />
-        <input
-          type="password"
-          id="regPass"
-          placeholder="Password (Min 8 chars)"
-        />
-
-        <button onclick="handleRegister()">Sign Up</button>
-        <p class="switch-text">
-          Already have an account? <span onclick="showLogin()">Log In</span>
-        </p>
-        <p id="regError" class="error-msg"></p>
-        <p id="regSuccess" class="success-msg"></p>
       </div>
     </div>
   </body>
@@ -54,7 +32,8 @@
     margin: 0;
   }
 
-  .auth-container {
+  .auth-container,
+  .already-connected {
     background: white;
     padding: 40px;
     border-radius: 16px;
@@ -63,7 +42,18 @@
     max-width: 400px;
     text-align: center;
   }
-
+  .already-connected {
+    position: relative;
+    bottom: 100px;
+    max-width: 500px;
+  }
+  .already-connected button {
+    margin: 30px 10px;
+    margin-bottom: 10px;
+  }
+  .logout-btn {
+    background: #6f4e37;
+  }
   .form-wrapper h2 {
     color: #6f4e37;
     margin-bottom: 10px;
@@ -94,7 +84,8 @@
     font-weight: bold;
   }
 
-  .auth-container button:hover {
+  .auth-container button:hover,
+  .logout-btn:hover {
     background-color: #5a3e2b;
   }
 
@@ -126,57 +117,45 @@
 </style>
 <script>
   // פונקציות עזר למעבר בין טפסים
-  function showRegister() {
-    document.getElementById("loginForm").classList.add("hidden");
-    document.getElementById("registerForm").classList.remove("hidden");
-  }
 
-  function showLogin() {
-    document.getElementById("registerForm").classList.add("hidden");
-    document.getElementById("loginForm").classList.remove("hidden");
-  }
+  document.addEventListener("DOMContentLoaded", () => {
+    if (localStorage.getItem("status") == "connected") {
+      document.querySelectorAll(".auth-container").forEach((el) => el.remove());
 
-  // --- לוגיקה של הרשמה (Registration) ---
-  function handleRegister() {
-    const email = document.getElementById("regEmail").value;
-    const password = document.getElementById("regPass").value;
-    const errorEl = document.getElementById("regError");
-    const successEl = document.getElementById("regSuccess");
+      const body = document.querySelector(".login-body");
+      const alreadyConnected = document.createElement("div");
+      alreadyConnected.className = "already-connected";
+      const message = document.createElement("h2");
+      message.textContent = "you are already connected...";
+      const okBtn = document.createElement("button");
+      okBtn.textContent = "OK";
+      okBtn.onclick = () => {
+        window.location.href = "dashboard.html";
+      };
 
-    // איפוס הודעות
-    errorEl.textContent = "";
-    successEl.textContent = "";
-    errorEl.style.color = "red";
+      const logoutBtn = document.createElement("button");
+      logoutBtn.textContent = "Log out";
+      logoutBtn.className = "logout-btn";
+      logoutBtn.onclick = () => {
+        localStorage.removeItem("status");
+        window.location.href = "index.html";
+      };
 
-    // 1. בדיקת RegEx לאימייל (דרישה מהמטלה)
-    // בודק אותיות/מספרים, @ ונקודה
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      alreadyConnected.appendChild(message);
+      alreadyConnected.appendChild(okBtn);
+      alreadyConnected.appendChild(logoutBtn);
 
-    if (!emailRegex.test(email)) {
-      errorEl.textContent = "Invalid email format (must include @ and .)";
-      return;
+      body.appendChild(alreadyConnected);
     }
+    if (!localStorage.getItem("user") || !localStorage.getItem("password")) {
+      const email = "tempmail123@gmail.com";
+      const password = "tempmail123";
 
-    // 2. בדיקת אורך סיסמה (מינימום 8 תווים)
-    if (password.length < 8) {
-      errorEl.textContent = "Password must be at least 8 characters long.";
-      return;
+      localStorage.setItem("user", email);
+      localStorage.setItem("password", password);
+      console.log("done");
     }
-
-    // 3. שמירה ב-LocalStorage (כנדרש: מפתחות user ו-password)
-    localStorage.setItem("user", email);
-    localStorage.setItem("password", password);
-
-    successEl.textContent = "Registration successful! Redirecting to login...";
-
-    // מעבר אוטומטי למסך לוגין אחרי 1.5 שניות
-    setTimeout(() => {
-      showLogin();
-      successEl.textContent = "";
-    }, 1500);
-  }
-
-  // --- לוגיקה של התחברות (Login) ---
+  });
   function handleLogin() {
     const email = document.getElementById("loginEmail").value;
     const password = document.getElementById("loginPass").value;
@@ -190,6 +169,7 @@
     if (email === storedUser && password === storedPass) {
       // התחברות מוצלחת -> מעבר לדשבורד
       window.location.href = "dashboard.html";
+      localStorage.setItem("status", "connected");
     } else {
       // כישלון -> הצגת הודעה מתאימה
       errorEl.textContent = "Invalid email or password.";

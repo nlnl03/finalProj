@@ -7,10 +7,10 @@
     <link rel="stylesheet" href="style.css" />
     <script>
       // בדיקה האם המשתמש מחובר
-      const user = localStorage.getItem("user");
+      const status = localStorage.getItem("status");
 
       // אם אין משתמש שמור בזיכרון -> זרוק אותו חזרה ללוגין
-      if (!user) {
+      if (!status) {
         window.location.href = "index.html"; // או login.html אם לא שינית את השם
       }
     </script>
@@ -20,7 +20,9 @@
     <main class="dashboard-container">
       <section class="card greeting-card">
         <div class="greeting-text">
-          <h2 id="greetingMsg">Good Morning, Guest!</h2>
+          <div>
+            <h2 id="greetingMsg"></h2>
+          </div>
           <p id="currentDate">Loading date...</p>
         </div>
       </section>
@@ -54,7 +56,6 @@
       <section class="card stats-card">
         <h3>Consumption Stats</h3>
         <div class="chart-container">
-          <span>No recent orders found.</span>
           <canvas id="myChart"></canvas>
         </div>
       </section>
@@ -64,14 +65,15 @@
 
 <script type="module" src="./navbar/navbar.js"></script>
 <script type="module">
-  let userName = localStorage.getItem("user").split("@")[0] || "Guest";
-  console.log(userName);
+  import { getSortedOrders, currentMonthOrders } from "./utilities/utils.js"; // ייבוא הפונקציה החדשה
 
   document.addEventListener("DOMContentLoaded", () => {
+    let userName = localStorage.getItem("user").split("@")[0] || "Guest";
+    console.log(userName);
+
     // --- 1. Greeting & Time Logic ---
     const greetingEl = document.getElementById("greetingMsg");
     const dateEl = document.getElementById("currentDate");
-
     // Set Date
     const now = new Date();
     const options = {
@@ -100,23 +102,54 @@
 
     // --- 3. Mini Order List (Last 3 items) ---
     const orderListEl = document.getElementById("latestOrders");
-    const orders = JSON.parse(localStorage.getItem("orders")) || [];
+    const allOrders = getSortedOrders();
 
-    if (!orders || !orders.length) {
+    if (!allOrders || !allOrders.length) {
+      document.querySelector(".chart-container")?.remove();
       const latestLink = document.querySelector(".orders-card");
       latestLink.href = "#";
       const latestList = document.querySelector(".latest-orders");
-      const notFoundli = document.createElement("li");
+      const statusCard = document.querySelector(".stats-card");
+
+      const notFoundli = document.createElement("span");
       notFoundli.textContent = "No recent orders found.";
+      const notFoundChart = document.createElement("span");
+      notFoundChart.className = "not-found-chart";
+      notFoundChart.textContent = "No recent orders found.";
+
       latestList.appendChild(notFoundli);
+      statusCard.appendChild(notFoundChart);
     } else {
-      orderListEl.innerHTML = ""; // Clear "no orders" text
+      //show the orders we have this month
+      const countOrdersMonth = currentMonthOrders(allOrders);
+      console.log(countOrdersMonth);
+
+      const ordersThisMonth = document.createElement("p");
+      ordersThisMonth.className = "current-month-orders";
+      ordersThisMonth.textContent = `Your orders this month: ${countOrdersMonth}`;
+      greetingEl.insertAdjacentElement("afterend", ordersThisMonth);
+
       // Take last 3 orders (assuming new ones are added at the end)
-      const recentOrders = orders.slice(-3).reverse();
+      const recentOrders = allOrders.slice(0, 3);
 
       recentOrders.forEach((order) => {
         const li = document.createElement("li");
-        li.innerHTML = `<span>${order.ProductName}</span> <span>$${order.Amount}</span>`;
+        const ordName = document.createElement("span");
+        const ordDate = document.createElement("span");
+        const ordPrice = document.createElement("span");
+
+        ordName.textContent = order.ProductName;
+        ordDate.textContent = order.Date;
+        ordPrice.textContent = parseFloat(order.Amount).toFixed(2) + "$";
+
+        const infoDiv = document.createElement("div");
+        infoDiv.classList = "latest-order-info";
+        infoDiv.appendChild(ordDate);
+        infoDiv.appendChild(ordPrice);
+
+        li.appendChild(ordName);
+        li.appendChild(infoDiv);
+
         orderListEl.appendChild(li);
       });
 
@@ -125,7 +158,7 @@
 
       const productCounts = {};
 
-      orders.forEach((order) => {
+      allOrders.forEach((order) => {
         const name = order.ProductName;
         productCounts[name] = (productCounts[name] || 0) + 1;
       });
@@ -164,178 +197,3 @@
     }
   });
 </script>
-
-<style>
-  /* --- Dashboard Layout --- */
-  .dashboard-header {
-    background: white;
-    padding: 15px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .dashboard-header h1 {
-    margin: 0;
-    font-size: 1.2rem;
-    color: #6f4e37;
-  }
-
-  /* --- The Grid System --- */
-  .dashboard-container {
-    margin-top: 50px !important;
-    display: grid;
-    padding: 20px;
-    gap: 20px;
-    max-width: 1000px;
-    margin: 0 auto;
-
-    /* Mobile First: 1 Column */
-    grid-template-columns: 1fr;
-
-    /* Layout Areas */
-    grid-template-areas:
-      "greeting"
-      "menu"
-      "club"
-      "orders"
-      "stats";
-  }
-
-  /* --- Desktop Layout (Tablet and up) --- */
-  @media (min-width: 768px) {
-    .dashboard-container {
-      grid-template-columns: 1fr 1fr; /* 2 Columns */
-      grid-template-areas:
-        "greeting greeting"
-        "menu stats"
-        "club orders";
-    }
-
-    .stats-card {
-      height: 100%; /* Match height of menu card */
-    }
-  }
-
-  /* --- Card Styles --- */
-  .card {
-    background: white;
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s;
-    text-decoration: none;
-    color: inherit;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .card:hover {
-    transform: translateY(-3px);
-  }
-
-  /* A. Greeting */
-  .greeting-card {
-    grid-area: greeting;
-    border-left: 5px solid #6f4e37;
-  }
-  .greeting-text {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-  }
-  .greeting-text p {
-    margin: 5px 0 0;
-    color: #777;
-    font-size: 0.9rem;
-  }
-
-  /* D. Menu Image */
-  .menu-link-card {
-    grid-area: menu;
-    padding: 0;
-    display: block;
-  }
-  .menu-link-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .menu-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(0, 0, 0, 0.6);
-    color: white;
-    padding: 10px;
-    text-align: center;
-    font-weight: bold;
-  }
-
-  /* C. Club Card */
-  .club-card {
-    grid-area: club;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    background: linear-gradient(135deg, #6f4e37, #8b5e3c);
-    color: white;
-  }
-  .card-icon {
-    font-size: 2.5rem;
-  }
-  .club-card h3 {
-    margin: 0;
-    font-size: 1rem;
-    opacity: 0.9;
-  }
-  .club-card .balance {
-    font-size: 1.8rem;
-    font-weight: bold;
-  }
-  .club-card small {
-    opacity: 0.8;
-  }
-
-  /* B. Orders Shortcut */
-  .orders-card {
-    grid-area: orders;
-  }
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  .latest-orders {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .latest-orders li {
-    padding: 8px 0;
-    border-bottom: 1px solid #eee;
-    font-size: 0.9rem;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  /* E. Graph */
-  .stats-card {
-    grid-area: stats;
-  }
-  .chart-container {
-    position: relative;
-    height: 200px;
-    width: 100%;
-  }
-
-  canvas {
-    margin-top: 30px;
-  }
-</style>
