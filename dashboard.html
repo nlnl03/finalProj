@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cafe Byte & Brew - Dashboard</title>
+    <title>Cafe App</title>
     <link rel="stylesheet" href="./stylesheet/style.css" />
     <script>
       // בדיקה האם המשתמש מחובר
@@ -68,7 +68,7 @@
   import { getSortedOrders, currentMonthOrders } from "./utilities/utils.js"; // ייבוא הפונקציה החדשה
 
   document.addEventListener("DOMContentLoaded", () => {
-    let userName = localStorage.getItem("user").split("@")[0] || "Guest";
+    const userName = localStorage.getItem("user")?.split("@")[0] || "Guest";
     console.log(userName);
 
     // --- 1. Greeting & Time Logic ---

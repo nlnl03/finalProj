@@ -21,100 +21,7 @@
     </div>
   </body>
 </html>
-<style>
-  /* --- Login Page Specific Styles --- */
-  .login-body {
-    background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-  }
 
-  .auth-container,
-  .already-connected {
-    background: white;
-    padding: 40px;
-    border-radius: 16px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-  }
-  .already-connected {
-    position: relative;
-    bottom: 100px;
-    max-width: 500px;
-  }
-  .already-connected button {
-    margin: 30px 10px;
-    margin-bottom: 10px;
-  }
-  .logout-btn {
-    background: #6f4e37;
-  }
-  .form-wrapper h2 {
-    color: #6f4e37;
-    margin-bottom: 10px;
-  }
-  .form-wrapper p {
-    color: #666;
-    margin-bottom: 20px;
-  }
-
-  .auth-container input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-sizing: border-box; /* חשוב כדי שהפדינג לא ישבור את הרוחב */
-  }
-
-  .auth-container button {
-    width: 100%;
-    padding: 12px;
-    background-color: #6f4e37;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    cursor: pointer;
-    font-weight: bold;
-  }
-
-  .auth-container button:hover,
-  .logout-btn:hover {
-    background-color: #5a3e2b;
-  }
-
-  .switch-text {
-    margin-top: 15px;
-    font-size: 0.9rem;
-  }
-
-  .switch-text span {
-    color: #6f4e37;
-    font-weight: bold;
-    cursor: pointer;
-    text-decoration: underline;
-  }
-
-  .hidden {
-    display: none;
-  }
-  .error-msg {
-    color: red;
-    font-size: 0.9rem;
-    margin-top: 10px;
-  }
-  .success-msg {
-    color: green;
-    font-size: 0.9rem;
-    margin-top: 10px;
-  }
-</style>
 <script>
   // פונקציות עזר למעבר בין טפסים
 
@@ -126,7 +33,7 @@
       const alreadyConnected = document.createElement("div");
       alreadyConnected.className = "already-connected";
       const message = document.createElement("h2");
-      message.textContent = "you are already connected...";
+      message.textContent = "You are already connected...";
       const okBtn = document.createElement("button");
       okBtn.textContent = "OK";
       okBtn.onclick = () => {
