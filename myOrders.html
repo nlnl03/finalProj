@@ -70,24 +70,82 @@
 </script>
 
 <style>
-  .orders-container {
+  /* --- Global Reset for this page --- */
+
+  .main-page {
     display: flex;
     flex-direction: column;
-    width: 800px;
-  }
-  .order-card {
-    /* display: flex; */
-    border: 1px solid #cccccc98;
+    align-items: center; /* Centers the grid container */
     padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 30px;
-    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
-    background-color: #f9f9f9;
   }
-  p {
-    margin: 10px 0;
-  }
-  .product-name {
+
+  .page-title h1 {
     margin-bottom: 20px;
+  }
+
+  /* --- Responsive Grid Container --- */
+  .orders-container {
+    display: grid; /* Use Grid */
+    grid-template-columns: 1fr; /* 1 Column layout */
+    gap: 20px; /* Space between cards */
+    width: 100%; /* Take full width on mobile */
+    max-width: 750px; /* Limit width on desktop */
+
+    /* No fixed width means it shrinks automatically on mobile */
+  }
+
+  /* --- Card Styling --- */
+  .order-card {
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Softer shadow */
+    transition: transform 0.2s ease;
+
+    /* Flex to align text inside nicely */
+    display: flex;
+    flex-direction: column;
+  }
+
+  .order-card:hover {
+    transform: translateY(-3px);
+    border-color: #6f4e37;
+  }
+
+  .product-name {
+    margin: 0 0 15px 0;
+    font-size: 1.4rem;
+  }
+
+  p {
+    margin: 5px 0;
+  }
+
+  .price-text {
+    font-weight: bold;
+    color: #6f4e37;
+    font-size: 1.1rem;
+  }
+
+  /* --- Mobile Specific Adjustments --- */
+  @media (max-width: 768px) {
+    .orders-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 148px;
+    }
+    .main-page {
+      padding: 10px;
+    }
+
+    .order-card {
+      padding: 15px;
+    }
+
+    .product-name {
+      font-size: 1.2rem;
+    }
   }
 </style>

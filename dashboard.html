@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cafe Byte & Brew - Dashboard</title>
     <link rel="stylesheet" href="style.css" />
+    <script>
+      // בדיקה האם המשתמש מחובר
+      const user = localStorage.getItem("user");
+
+      // אם אין משתמש שמור בזיכרון -> זרוק אותו חזרה ללוגין
+      if (!user) {
+        window.location.href = "index.html"; // או login.html אם לא שינית את השם
+      }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
@@ -39,14 +48,13 @@
         <div class="card-header">
           <h3>My Recent Orders</h3>
         </div>
-        <ul class="latest-orders" id="latestOrders">
-          <li>No recent orders found.</li>
-        </ul>
+        <ul class="latest-orders" id="latestOrders"></ul>
       </a>
 
       <section class="card stats-card">
         <h3>Consumption Stats</h3>
         <div class="chart-container">
+          <span>No recent orders found.</span>
           <canvas id="myChart"></canvas>
         </div>
       </section>
@@ -56,6 +64,9 @@
 
 <script type="module" src="./navbar/navbar.js"></script>
 <script type="module">
+  let userName = localStorage.getItem("user").split("@")[0] || "Guest";
+  console.log(userName);
+
   document.addEventListener("DOMContentLoaded", () => {
     // --- 1. Greeting & Time Logic ---
     const greetingEl = document.getElementById("greetingMsg");
@@ -76,11 +87,10 @@
     // Set Greeting based on hour
     const hour = now.getHours();
     let timeGreeting = "Good Morning";
-    if (hour >= 12 && hour < 18) timeGreeting = "Good Afternoon";
-    else if (hour >= 18) timeGreeting = "Good Evening";
+    if (hour >= 12 && hour <= 18) timeGreeting = "Good Afternoon";
+    else if (hour > 18) timeGreeting = "Good Evening";
 
     // Get User Name (Optional feature from PDF)
-    const userName = localStorage.getItem("user") || "Guest";
     greetingEl.textContent = `${timeGreeting}, ${userName}!`;
 
     // --- 2. Load Credit Balance ---
@@ -92,7 +102,14 @@
     const orderListEl = document.getElementById("latestOrders");
     const orders = JSON.parse(localStorage.getItem("orders")) || [];
 
-    if (orders.length > 0) {
+    if (!orders || !orders.length) {
+      const latestLink = document.querySelector(".orders-card");
+      latestLink.href = "#";
+      const latestList = document.querySelector(".latest-orders");
+      const notFoundli = document.createElement("li");
+      notFoundli.textContent = "No recent orders found.";
+      latestList.appendChild(notFoundli);
+    } else {
       orderListEl.innerHTML = ""; // Clear "no orders" text
       // Take last 3 orders (assuming new ones are added at the end)
       const recentOrders = orders.slice(-3).reverse();
@@ -102,64 +119,54 @@
         li.innerHTML = `<span>${order.ProductName}</span> <span>$${order.Amount}</span>`;
         orderListEl.appendChild(li);
       });
+
+      // --- 4. Render Chart (Chart.js) ---
+      const ctx = document.getElementById("myChart").getContext("2d");
+
+      const productCounts = {};
+
+      orders.forEach((order) => {
+        const name = order.ProductName;
+        productCounts[name] = (productCounts[name] || 0) + 1;
+      });
+
+      // Prepare data arrays for Chart.js
+      const labels = Object.keys(productCounts); // e.g., ["Latte", "Bagel"]
+      const dataPoints = Object.values(productCounts); // e.g., [5, 2]
+
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: labels.length ? labels : ["No Data"], // Fallback if empty
+          datasets: [
+            {
+              label: "Items Purchased",
+              data: dataPoints.length ? dataPoints : [0],
+              backgroundColor: "rgba(111, 78, 55, 0.6)", // Coffee color
+              borderColor: "rgba(111, 78, 55, 1)",
+              borderWidth: 1,
+              borderRadius: 4,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { beginAtZero: true, ticks: { stepSize: 1 } },
+            x: { grid: { display: false } },
+          },
+          plugins: {
+            legend: { display: false },
+          },
+        },
+      });
     }
-
-    // --- 4. Render Chart (Chart.js) ---
-    const ctx = document.getElementById("myChart").getContext("2d");
-
-    // Fake data for visual if no real data exists yet
-    // In a real scenario, you would calculate this from the 'orders' array
-    const chartData = {
-      labels: ["Coffee", "Pastry", "Salad", "Sandwich", "Toast"],
-      datasets: [
-        {
-          label: "# of Orders",
-          data: [12, 19, 3, 5, 2], // You can replace this with dynamic counts later
-          backgroundColor: [
-            "rgba(111, 78, 55, 0.6)", // Coffee Brown
-            "rgba(193, 154, 107, 0.6)",
-            "rgba(111, 78, 55, 0.4)",
-            "rgba(193, 154, 107, 0.4)",
-            "rgba(111, 78, 55, 0.2)",
-          ],
-          borderColor: [
-            "rgba(111, 78, 55, 1)",
-            "rgba(193, 154, 107, 1)",
-            "rgba(111, 78, 55, 1)",
-            "rgba(193, 154, 107, 1)",
-            "rgba(111, 78, 55, 1)",
-          ],
-          borderWidth: 1,
-        },
-      ],
-    };
-
-    new Chart(ctx, {
-      type: "bar", // Histogram style
-      data: chartData,
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: { beginAtZero: true },
-        },
-        plugins: {
-          legend: { display: false }, // Hide legend to save space
-        },
-      },
-    });
   });
 </script>
 
 <style>
   /* --- Dashboard Layout --- */
-  body {
-    background-color: #f8f5f2;
-    margin: 0;
-    padding-bottom: 80px; /* Space for bottom nav */
-    font-family: "Segoe UI", sans-serif;
-  }
-
   .dashboard-header {
     background: white;
     padding: 15px 20px;

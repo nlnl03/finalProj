@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cafe App - Login</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="login-body">
+    <div class="auth-container">
+      <div id="loginForm" class="form-wrapper">
+        <h2>Welcome Back</h2>
+        <p>Please log in to your account</p>
+
+        <input type="email" id="loginEmail" placeholder="Email Address" />
+        <input type="password" id="loginPass" placeholder="Password" />
+
+        <button onclick="handleLogin()">Log In</button>
+        <p class="switch-text">
+          New here? <span onclick="showRegister()">Create an account</span>
+        </p>
+        <p id="loginError" class="error-msg"></p>
+      </div>
+
+      <div id="registerForm" class="form-wrapper hidden">
+        <h2>Create Account</h2>
+        <p>Join our Coffee Club</p>
+
+        <input type="email" id="regEmail" placeholder="Email Address" />
+        <input
+          type="password"
+          id="regPass"
+          placeholder="Password (Min 8 chars)"
+        />
+
+        <button onclick="handleRegister()">Sign Up</button>
+        <p class="switch-text">
+          Already have an account? <span onclick="showLogin()">Log In</span>
+        </p>
+        <p id="regError" class="error-msg"></p>
+        <p id="regSuccess" class="success-msg"></p>
+      </div>
+    </div>
+  </body>
+</html>
+<style>
+  /* --- Login Page Specific Styles --- */
+  .login-body {
+    background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+
+  .auth-container {
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+
+  .form-wrapper h2 {
+    color: #6f4e37;
+    margin-bottom: 10px;
+  }
+  .form-wrapper p {
+    color: #666;
+    margin-bottom: 20px;
+  }
+
+  .auth-container input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box; /* חשוב כדי שהפדינג לא ישבור את הרוחב */
+  }
+
+  .auth-container button {
+    width: 100%;
+    padding: 12px;
+    background-color: #6f4e37;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .auth-container button:hover {
+    background-color: #5a3e2b;
+  }
+
+  .switch-text {
+    margin-top: 15px;
+    font-size: 0.9rem;
+  }
+
+  .switch-text span {
+    color: #6f4e37;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  .hidden {
+    display: none;
+  }
+  .error-msg {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 10px;
+  }
+  .success-msg {
+    color: green;
+    font-size: 0.9rem;
+    margin-top: 10px;
+  }
+</style>
+<script>
+  // פונקציות עזר למעבר בין טפסים
+  function showRegister() {
+    document.getElementById("loginForm").classList.add("hidden");
+    document.getElementById("registerForm").classList.remove("hidden");
+  }
+
+  function showLogin() {
+    document.getElementById("registerForm").classList.add("hidden");
+    document.getElementById("loginForm").classList.remove("hidden");
+  }
+
+  // --- לוגיקה של הרשמה (Registration) ---
+  function handleRegister() {
+    const email = document.getElementById("regEmail").value;
+    const password = document.getElementById("regPass").value;
+    const errorEl = document.getElementById("regError");
+    const successEl = document.getElementById("regSuccess");
+
+    // איפוס הודעות
+    errorEl.textContent = "";
+    successEl.textContent = "";
+    errorEl.style.color = "red";
+
+    // 1. בדיקת RegEx לאימייל (דרישה מהמטלה)
+    // בודק אותיות/מספרים, @ ונקודה
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    if (!emailRegex.test(email)) {
+      errorEl.textContent = "Invalid email format (must include @ and .)";
+      return;
+    }
+
+    // 2. בדיקת אורך סיסמה (מינימום 8 תווים)
+    if (password.length < 8) {
+      errorEl.textContent = "Password must be at least 8 characters long.";
+      return;
+    }
+
+    // 3. שמירה ב-LocalStorage (כנדרש: מפתחות user ו-password)
+    localStorage.setItem("user", email);
+    localStorage.setItem("password", password);
+
+    successEl.textContent = "Registration successful! Redirecting to login...";
+
+    // מעבר אוטומטי למסך לוגין אחרי 1.5 שניות
+    setTimeout(() => {
+      showLogin();
+      successEl.textContent = "";
+    }, 1500);
+  }
+
+  // --- לוגיקה של התחברות (Login) ---
+  function handleLogin() {
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPass").value;
+    const errorEl = document.getElementById("loginError");
+
+    // שליפת הנתונים השמורים
+    const storedUser = localStorage.getItem("user");
+    const storedPass = localStorage.getItem("password");
+
+    // בדיקה אם הנתונים קיימים והאם הם תואמים לקלט
+    if (email === storedUser && password === storedPass) {
+      // התחברות מוצלחת -> מעבר לדשבורד
+      window.location.href = "dashboard.html";
+    } else {
+      // כישלון -> הצגת הודעה מתאימה
+      errorEl.textContent = "Invalid email or password.";
+      errorEl.style.color = "red";
+    }
+  }
+</script>

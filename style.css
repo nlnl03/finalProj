@@ -1,8 +1,9 @@
 :root {
   --main-p-color: #888;
+  --main-title-color: #4a3b32;
 }
 body {
-  font-family: "Inter", sans-serif;
+  font-family: "Segoe UI", sans-serif;
   background-color: #f4f1ea;
   margin: 0;
   padding: 0;
@@ -84,6 +85,7 @@ h1 {
 h2 {
   font-size: clamp(0.9rem, 7vw, 1.5rem);
 }
+
 h1,
 h2 {
   color: var(--main-title-color);
@@ -107,15 +109,17 @@ p {
   color: #fff;
   padding: 25px 20px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
+}
+.app-title {
+  color: white;
 }
 
 /* ===== LEFT ===== */
 .nav-left {
   display: flex;
   align-items: center;
-  gap: 14px;
 }
 
 .app-title {
@@ -157,7 +161,7 @@ p {
 /* ===== LINKS (DESKTOP) ===== */
 .nav-links {
   display: flex;
-  gap: 26px;
+  gap: 20px;
 }
 
 .nav-item {
@@ -175,7 +179,7 @@ p {
   bottom: 0;
   width: 0;
   height: 2px;
-  background: #f5c518;
+  background: #f4f1ea;
   transition: width 0.35s ease;
 }
 
@@ -195,16 +199,13 @@ p {
     top: 100%;
     left: 0;
     right: 0;
-
-    background: #111;
+    background: #ad9c83;
     flex-direction: column;
     align-items: center;
-
     max-height: 0;
     overflow: hidden;
     opacity: 0;
     transform: translateY(-10px);
-
     transition: max-height 0.5s ease, opacity 0.4s ease, transform 0.4s ease;
   }
 
@@ -212,11 +213,18 @@ p {
     max-height: 400px; /* enough for all items */
     opacity: 1;
     transform: translateY(0);
+    padding: 15px;
   }
 
   .nav-item {
     padding: 14px 0;
     font-size: 1.1rem;
+    width: 100%;
+    text-align: center;
+  }
+  .nav-left {
+    width: 90%;
+    justify-content: space-between;
   }
 }
 

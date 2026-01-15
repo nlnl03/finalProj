@@ -17,11 +17,11 @@ export function loadNavbar() {
   `;
 
   const title = document.createElement("a");
-  title.href = "./dashboard.html" ;
+  title.href = "./dashboard.html";
   title.className = "app-title";
   title.textContent = "Cafe App";
 
-  left.append(hamburger, title);
+  left.append(title, hamburger);
 
   const navLinks = document.createElement("div");
   navLinks.className = "nav-links";
